@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>물류 관리 시스템</title>
+    <link rel="stylesheet" href="/css/logistics.css">
+</head>
+<body>
+<div class="header">
+    <h1>물류 관리 시스템</h1>
+    <div class="nav">
+        <a href="#productSection">상품</a>
+        <a href="#warehouseSection">창고</a>
+        <a href="#inboundSection">입고</a>
+        <a href="#outboundSection">출고</a>
+        <a href="#stockSection">재고</a>
+        <a href="#historySection">입·출고 내역</a>
+    </div>
+</div>
+
+<div class="container">
+    <div id="message"></div>
+
+    <!-- 상품 섹션 -->
+    <div class="section" id="productSection">
+        <h2>상품 관리</h2>
+
+        <h3>상품 등록</h3>
+        <div>
+            <div>
+                <label for="productCode">코드</label>
+                <input type="text" id="productCode" placeholder="예: P-001">
+            </div>
+            <div>
+                <label for="productName">이름</label>
+                <input type="text" id="productName" placeholder="예: 샘플 상품">
+            </div>
+            <div>
+                <label for="productUnit">단위</label>
+                <input type="text" id="productUnit" placeholder="예: EA, BOX">
+            </div>
+            <button onclick="createProduct()">상품 등록</button>
+            <button onclick="loadProducts()">상품 새로고침</button>
+        </div>
+
+        <div class="search-row">
+            <label for="productSearch">검색(코드/이름)</label>
+            <input type="text" id="productSearch" oninput="filterProducts()" placeholder="검색어 입력">
+        </div>
+
+        <h3>상품 목록</h3>
+        <table id="productTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>단위</th>
+                <th>상태</th>
+                <th>생성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 상품 데이터 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 창고 섹션 -->
+    <div class="section" id="warehouseSection">
+        <h2>창고 관리</h2>
+
+        <h3>창고 등록</h3>
+        <div>
+            <div>
+                <label for="warehouseCode">코드</label>
+                <input type="text" id="warehouseCode" placeholder="예: WH-001">
+            </div>
+            <div>
+                <label for="warehouseName">이름</label>
+                <input type="text" id="warehouseName" placeholder="예: 서울 1창고">
+            </div>
+            <div>
+                <label for="warehouseLocation">위치</label>
+                <input type="text" id="warehouseLocation" placeholder="예: 서울시 강남구">
+            </div>
+            <div>
+                <label for="warehouseDesc">비고</label>
+                <input type="text" id="warehouseDesc" placeholder="설명">
+            </div>
+            <button onclick="createWarehouse()">창고 등록</button>
+            <button onclick="loadWarehouses()">창고 새로고침</button>
+        </div>
+
+        <div class="search-row">
+            <label for="warehouseSearch">검색(코드/이름)</label>
+            <input type="text" id="warehouseSearch" oninput="filterWarehouses()" placeholder="검색어 입력">
+        </div>
+
+        <h3>창고 목록</h3>
+        <table id="warehouseTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>위치</th>
+                <th>비고</th>
+                <th>생성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 창고 데이터 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 입고 섹션 -->
+    <div class="section" id="inboundSection">
+        <h2>입고 처리</h2>
+
+        <h3>입고 등록</h3>
+        <div>
+            <div>
+                <label for="inboundWarehouseSelect">창고</label>
+                <select id="inboundWarehouseSelect"></select>
+            </div>
+            <div>
+                <label for="inboundProductSelect">상품</label>
+                <select id="inboundProductSelect"></select>
+            </div>
+            <div>
+                <label for="inboundQuantity">수량</label>
+                <input type="number" id="inboundQuantity" min="1" value="1">
+            </div>
+            <div>
+                <label for="inboundRemark">비고</label>
+                <input type="text" id="inboundRemark" placeholder="입고 비고">
+            </div>
+            <button onclick="createInbound()">입고 등록</button>
+        </div>
+    </div>
+
+    <!-- 출고 섹션 -->
+    <div class="section" id="outboundSection">
+        <h2>출고 처리</h2>
+
+        <h3>출고 등록</h3>
+        <div>
+            <div>
+                <label for="outboundWarehouseSelect">창고</label>
+                <select id="outboundWarehouseSelect"></select>
+            </div>
+            <div>
+                <label for="outboundProductSelect">상품</label>
+                <select id="outboundProductSelect"></select>
+            </div>
+            <div>
+                <label for="outboundQuantity">수량</label>
+                <input type="number" id="outboundQuantity" min="1" value="1">
+            </div>
+            <div>
+                <label for="outboundCustomer">고객명</label>
+                <input type="text" id="outboundCustomer" placeholder="예: 홍길동">
+            </div>
+            <div>
+                <label for="outboundRemark">비고</label>
+                <input type="text" id="outboundRemark" placeholder="출고 비고">
+            </div>
+            <button onclick="createOutbound()">출고 등록</button>
+        </div>
+    </div>
+
+    <!-- 재고 섹션 -->
+    <div class="section" id="stockSection">
+        <h2>재고 조회</h2>
+
+        <div class="search-row">
+            <label for="stockWarehouseFilter">창고 필터</label>
+            <select id="stockWarehouseFilter" onchange="filterStocks()">
+                <option value="">전체</option>
+            </select>
+
+            <label for="stockProductFilter">상품 필터</label>
+            <select id="stockProductFilter" onchange="filterStocks()">
+                <option value="">전체</option>
+            </select>
+
+            <button onclick="loadStocks()">재고 새로고침</button>
+        </div>
+
+        <table id="stockTable">
+            <thead>
+            <tr>
+                <th>재고ID</th>
+                <th>창고코드</th>
+                <th>창고명</th>
+                <th>상품코드</th>
+                <th>상품명</th>
+                <th>수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 재고 데이터 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 입출고 내역 섹션 -->
+    <div class="section" id="historySection">
+        <h2>입·출고 내역 조회 (기간별)</h2>
+
+        <h3>입고 내역</h3>
+        <div class="search-row">
+            <label for="inboundFrom">시작일</label>
+            <input type="date" id="inboundFrom">
+            <label for="inboundTo">종료일</label>
+            <input type="date" id="inboundTo">
+            <button onclick="loadInbounds()">조회</button>
+        </div>
+        <table id="inboundTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>창고코드</th>
+                <th>창고명</th>
+                <th>입고일시</th>
+                <th>비고</th>
+                <th>상품종류수</th>
+                <th>총수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 입고 내역 -->
+            </tbody>
+        </table>
+
+        <h3 style="margin-top: 20px;">출고 내역</h3>
+        <div class="search-row">
+            <label for="outboundFrom">시작일</label>
+            <input type="date" id="outboundFrom">
+            <label for="outboundTo">종료일</label>
+            <input type="date" id="outboundTo">
+            <button onclick="loadOutbounds()">조회</button>
+        </div>
+        <table id="outboundTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>창고코드</th>
+                <th>창고명</th>
+                <th>출고일시</th>
+                <th>고객명</th>
+                <th>비고</th>
+                <th>상품종류수</th>
+                <th>총수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 출고 내역 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/js/logistics.js"></script>
+</body>
+</html>

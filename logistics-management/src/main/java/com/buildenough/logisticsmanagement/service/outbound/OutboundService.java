@@ -6,6 +6,7 @@ import com.buildenough.logisticsmanagement.domain.outbound.Outbound;
 import com.buildenough.logisticsmanagement.domain.outbound.OutboundItem;
 import com.buildenough.logisticsmanagement.dto.outbound.OutboundCreateRequest;
 import com.buildenough.logisticsmanagement.dto.outbound.OutboundItemRequest;
+import com.buildenough.logisticsmanagement.dto.outbound.OutboundListItemResponse;
 import com.buildenough.logisticsmanagement.dto.outbound.OutboundResponse;
 import com.buildenough.logisticsmanagement.repository.ProductRepository;
 import com.buildenough.logisticsmanagement.repository.WarehouseRepository;
@@ -14,7 +15,9 @@ import com.buildenough.logisticsmanagement.service.stock.StockService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OutboundService {
@@ -69,5 +72,26 @@ public class OutboundService {
 
         Outbound saved = outboundRepository.save(outbound);
         return new OutboundResponse(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OutboundListItemResponse> getOutbounds(LocalDate from, LocalDate to) {
+        List<Outbound> outbounds;
+
+        if (from == null && to == null) {
+            outbounds = outboundRepository.findAll();
+        } else {
+            LocalDate fromDate = (from != null) ? from : LocalDate.of(1970, 1, 1);
+            LocalDate toDate = (to != null) ? to : LocalDate.of(2100, 1, 1);
+
+            LocalDateTime start = fromDate.atStartOfDay();
+            LocalDateTime end = toDate.plusDays(1).atStartOfDay();
+
+            outbounds = outboundRepository.findByOutboundDateBetween(start, end);
+        }
+
+        return outbounds.stream()
+                .map(OutboundListItemResponse::new)
+                .toList();
     }
 }

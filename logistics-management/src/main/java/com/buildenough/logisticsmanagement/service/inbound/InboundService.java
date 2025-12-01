@@ -6,6 +6,7 @@ import com.buildenough.logisticsmanagement.domain.inbound.Inbound;
 import com.buildenough.logisticsmanagement.domain.inbound.InboundItem;
 import com.buildenough.logisticsmanagement.dto.inbound.InboundCreateRequest;
 import com.buildenough.logisticsmanagement.dto.inbound.InboundItemRequest;
+import com.buildenough.logisticsmanagement.dto.inbound.InboundListItemResponse;
 import com.buildenough.logisticsmanagement.dto.inbound.InboundResponse;
 import com.buildenough.logisticsmanagement.repository.ProductRepository;
 import com.buildenough.logisticsmanagement.repository.WarehouseRepository;
@@ -15,7 +16,9 @@ import com.buildenough.logisticsmanagement.service.stock.StockService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class InboundService {
@@ -72,7 +75,27 @@ public class InboundService {
 
         Inbound saved = inboundRepository.save(inbound);
         return new InboundResponse(saved);
+    }
 
+    @Transactional(readOnly = true)
+    public List<InboundListItemResponse> getInbounds(LocalDate from, LocalDate to) {
+        List<Inbound> inbounds;
+
+        if (from == null && to == null) {
+            inbounds = inboundRepository.findAll();
+        } else {
+            LocalDate fromDate = (from != null) ? from : LocalDate.of(1970, 1, 1);
+            LocalDate toDate = (to != null) ? to : LocalDate.of(2100, 1, 1);
+
+            LocalDateTime start = fromDate.atStartOfDay();
+            LocalDateTime end = toDate.plusDays(1).atStartOfDay(); // to 날짜의 다음날 0시까지
+
+            inbounds = inboundRepository.findByInboundDateBetween(start, end);
+        }
+
+        return inbounds.stream()
+                .map(InboundListItemResponse::new)
+                .toList();
     }
 
 }

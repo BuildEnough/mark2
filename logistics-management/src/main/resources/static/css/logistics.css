@@ -1,0 +1,143 @@
+/* 레이아웃 기본 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+.header {
+    background-color: #34495e;
+    color: #ecf0f1;
+    padding: 12px 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.nav {
+    margin-top: 8px;
+}
+
+.nav a {
+    color: #ecf0f1;
+    margin-right: 12px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 16px 30px 16px;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+h3 {
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+/* 섹션 카드 */
+.section {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+/* 폼 요소 */
+label {
+    display: inline-block;
+    width: 110px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 220px;
+    padding: 5px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+}
+
+button {
+    padding: 6px 12px;
+    margin-top: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    background-color: #3498db;
+    color: #fff;
+    font-size: 13px;
+}
+
+button + button {
+    margin-left: 5px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* 테이블 */
+table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    width: 100%;
+    font-size: 13px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+/* 메시지 */
+#message {
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.error {
+    color: #c0392b;
+}
+
+.success {
+    color: #27ae60;
+}
+
+/* 검색 영역 */
+.search-row {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.search-row label {
+    width: auto;
+    margin-right: 4px;
+}
