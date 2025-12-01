@@ -82,6 +82,6 @@ public class Stock {
             throw new IllegalArgumentException("재고가 부족합니다. 현재 수량: " +  this.quantity);
         }
 
-        this.quantity += amount;
+        this.quantity -= amount;
     }
 }
