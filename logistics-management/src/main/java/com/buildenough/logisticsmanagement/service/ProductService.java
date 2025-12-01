@@ -41,9 +41,17 @@ public class ProductService {
     // 상품 전체 조회
     @Transactional(readOnly = true) // 조회 최적화
     public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll()
+        return productRepository.findByStatus(ProductStatus.ACTIVE)   // ACTIVE만 조회
                 .stream()
                 .map(ProductResponse::new)
                 .toList();
+    }
+
+    // 상품 삭제 = 비활성화 처리
+    @Transactional
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다. id=" + productId));
+        product.deactivate();
     }
 }

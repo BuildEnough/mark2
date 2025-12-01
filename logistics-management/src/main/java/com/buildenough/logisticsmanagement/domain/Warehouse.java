@@ -36,21 +36,35 @@ public class Warehouse {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private WarehouseStatus status;
+
     public Warehouse(String code, String name, String location, String description) {
         this.code = code;
         this.name = name;
         this.location = location;
         this.description = description;
+        this.status = WarehouseStatus.ACTIVE; // 기본값
     }
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
+        if (this.status == null) {
+            this.status = WarehouseStatus.ACTIVE;
+        }
+    }
+
+    // 비활성화 메서드
+    public void deactivate() {
+        this.status = WarehouseStatus.INACTIVE;
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 }

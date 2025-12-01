@@ -86,6 +86,9 @@ function renderProductTable(products) {
             <td>${p.unit}</td>
             <td>${p.status}</td>
             <td>${p.createdAt ?? ''}</td>
+            <td>
+                <button onclick="deleteProduct(${p.id})">삭제</button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -174,6 +177,9 @@ function renderWarehouseTable(warehouses) {
             <td>${w.location ?? ''}</td>
             <td>${w.description ?? ''}</td>
             <td>${w.createdAt ?? ''}</td>
+            <td>
+                <button onclick="deleteWarehouse(${w.id})">삭제</button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -521,3 +527,54 @@ window.onload = () => {
     loadInbounds();
     loadOutbounds();
 };
+
+async function deleteProduct(id) {
+    if (!confirm('정말 이 상품을 삭제(미사용 처리) 하시겠습니까?')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(API_BASE + '/api/products/' + id, {
+            method: 'DELETE'
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error('상품 삭제 실패: ' + text);
+        }
+
+        setMessage('상품이 삭제(미사용 처리)되었습니다.');
+        await loadProducts();   // 목록/셀렉트 갱신
+        await loadStocks();     // 재고 화면도 같이 갱신
+    } catch (e) {
+        console.error(e);
+        setMessage(e.message, true);
+    }
+}
+
+async function deleteWarehouse(id) {
+    if (!confirm('정말 이 창고를 삭제(미사용 처리) 하시겠습니까?\n' +
+        '※ 해당 창고에 입출고 이력이 있더라도, 이력은 남고 앞으로만 안 쓰이게 됩니다.')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(API_BASE + '/api/warehouses/' + id, {
+            method: 'DELETE'
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error('창고 삭제 실패: ' + text);
+        }
+
+        setMessage('창고가 삭제(미사용 처리)되었습니다.');
+        await loadWarehouses(); // 목록/셀렉트 갱신
+        await loadStocks();     // 재고 갱신
+        await loadInbounds();   // 입고 내역 갱신(선택지에서 빠지도록)
+        await loadOutbounds();  // 출고 내역도 갱신
+    } catch (e) {
+        console.error(e);
+        setMessage(e.message, true);
+    }
+}

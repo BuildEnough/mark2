@@ -1,6 +1,7 @@
 package com.buildenough.logisticsmanagement.service;
 
 import com.buildenough.logisticsmanagement.domain.Warehouse;
+import com.buildenough.logisticsmanagement.domain.WarehouseStatus;
 import com.buildenough.logisticsmanagement.dto.WarehouseResponse;
 import com.buildenough.logisticsmanagement.dto.WarehousecreateRequest;
 import com.buildenough.logisticsmanagement.repository.WarehouseRepository;
@@ -39,9 +40,18 @@ public class WarehouseService {
     // 창고 조회
     @Transactional
     public List<WarehouseResponse> getAllWarehouses() {
-        return warehouseRepository.findAll()
+        return warehouseRepository.findByStatus(WarehouseStatus.ACTIVE)
                 .stream()
                 .map(WarehouseResponse::new)
                 .toList();
     }
+
+    // 창고 삭제(비활성화)
+    @Transactional
+    public void deleteWarehouse(Long warehouseId) {
+        Warehouse warehouse = warehouseRepository.findById(warehouseId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다. id=" + warehouseId));
+        warehouse.deactivate();
+    }
+
 }

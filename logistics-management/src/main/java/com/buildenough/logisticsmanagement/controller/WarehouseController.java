@@ -34,4 +34,11 @@ public class WarehouseController {
         List<WarehouseResponse> warehouses = warehouseService.getAllWarehouses();
         return ResponseEntity.ok(warehouses);
     }
+
+    // 창고 삭제(비활성화)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWarehouse(@PathVariable Long id) {
+        warehouseService.deleteWarehouse(id);
+        return ResponseEntity.noContent().build();
+    }
 }

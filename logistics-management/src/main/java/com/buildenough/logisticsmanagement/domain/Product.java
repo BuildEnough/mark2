@@ -59,4 +59,8 @@ public class Product {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void deactivate() {
+        this.status = ProductStatus.INACTIVE;
+    }
+
 }
