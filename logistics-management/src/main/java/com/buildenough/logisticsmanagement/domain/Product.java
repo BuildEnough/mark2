@@ -63,4 +63,8 @@ public class Product {
         this.status = ProductStatus.INACTIVE;
     }
 
+    public void activate() {
+        this.status = ProductStatus.ACTIVE;
+    }
+
 }

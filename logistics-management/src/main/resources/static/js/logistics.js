@@ -4,6 +4,9 @@ let cachedProducts = [];
 let cachedWarehouses = [];
 let cachedStocks = [];
 
+let cachedInactiveProducts = [];
+let cachedInactiveWarehouses = [];
+
 function setMessage(text, isError = false) {
     const msg = document.getElementById('message');
     msg.textContent = text;
@@ -75,6 +78,7 @@ async function loadProducts() {
 
 function renderProductTable(products) {
     const tbody = document.querySelector('#productTable tbody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     products.forEach(p => {
@@ -166,6 +170,7 @@ async function loadWarehouses() {
 
 function renderWarehouseTable(warehouses) {
     const tbody = document.querySelector('#warehouseTable tbody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     warehouses.forEach(w => {
@@ -216,6 +221,7 @@ async function loadStocks() {
 
 function renderStockTable(stocks) {
     const tbody = document.querySelector('#stockTable tbody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     stocks.forEach(s => {
@@ -445,8 +451,17 @@ function populateProductSelects() {
     const inboundSelect = document.getElementById('inboundProductSelect');
     const outboundSelect = document.getElementById('outboundProductSelect');
 
-    inboundSelect.innerHTML = '';
-    outboundSelect.innerHTML = '';
+    // 이 페이지에 입고/출고 상품 셀렉트가 아예 없으면 아무 것도 안 함
+    if (!inboundSelect && !outboundSelect) {
+        return;
+    }
+
+    if (inboundSelect) {
+        inboundSelect.innerHTML = '';
+    }
+    if (outboundSelect) {
+        outboundSelect.innerHTML = '';
+    }
 
     cachedProducts.forEach(p => {
         const label = `${p.code} - ${p.name}`;
@@ -467,8 +482,16 @@ function populateWarehouseSelects() {
     const inboundSelect = document.getElementById('inboundWarehouseSelect');
     const outboundSelect = document.getElementById('outboundWarehouseSelect');
 
-    inboundSelect.innerHTML = '';
-    outboundSelect.innerHTML = '';
+    if (!inboundSelect && !outboundSelect) {
+        return;
+    }
+
+    if (inboundSelect) {
+        inboundSelect.innerHTML = '';
+    }
+    if (outboundSelect) {
+        outboundSelect.innerHTML = '';
+    }
 
     cachedWarehouses.forEach(w => {
         const label = `${w.code} - ${w.name}`;
@@ -487,6 +510,10 @@ function populateWarehouseSelects() {
 
 function populateStockWarehouseFilter() {
     const select = document.getElementById('stockWarehouseFilter');
+
+    // 이 페이지에 재고 창고 필터 없으면 스킵
+    if (!select) return;
+
     const current = select.value;
     select.innerHTML = '<option value="">전체</option>';
 
@@ -504,6 +531,10 @@ function populateStockWarehouseFilter() {
 
 function populateStockProductFilter() {
     const select = document.getElementById('stockProductFilter');
+
+    // 재고 상품 필터 없으면 스킵
+    if (!select) return;
+
     const current = select.value;
     select.innerHTML = '<option value="">전체</option>';
 
@@ -521,12 +552,41 @@ function populateStockProductFilter() {
 
 // 페이지 로드시 기본 데이터 로드
 window.onload = () => {
-    loadProducts();
-    loadWarehouses();
-    loadStocks();
-    loadInbounds();
-    loadOutbounds();
+    const hasProductSection   = document.getElementById('productSection')   !== null;
+    const hasWarehouseSection = document.getElementById('warehouseSection') !== null;
+    const hasInboundSection   = document.getElementById('inboundSection')   !== null;
+    const hasOutboundSection  = document.getElementById('outboundSection')  !== null;
+    const hasStockSection     = document.getElementById('stockSection')     !== null;
+    const hasHistorySection   = document.getElementById('historySection')   !== null;
+
+    // 상품 데이터 필요:
+    // - 상품 화면
+    // - 입고/출고 화면(상품 선택 셀렉트)
+    // - 재고 화면(상품 필터)
+    if (hasProductSection || hasInboundSection || hasOutboundSection || hasStockSection) {
+        loadProducts();
+    }
+
+    // 창고 데이터 필요:
+    // - 창고 화면
+    // - 입고/출고 화면(창고 셀렉트)
+    // - 재고 화면(창고 필터)
+    if (hasWarehouseSection || hasInboundSection || hasOutboundSection || hasStockSection) {
+        loadWarehouses();
+    }
+
+    // 재고 화면에서만 재고 로딩
+    if (hasStockSection) {
+        loadStocks();
+    }
+
+    // 입·출고 내역 화면에서만 내역 로딩
+    if (hasHistorySection) {
+        loadInbounds();
+        loadOutbounds();
+    }
 };
+
 
 async function deleteProduct(id) {
     if (!confirm('정말 이 상품을 삭제(미사용 처리) 하시겠습니까?')) {
@@ -573,6 +633,143 @@ async function deleteWarehouse(id) {
         await loadStocks();     // 재고 갱신
         await loadInbounds();   // 입고 내역 갱신(선택지에서 빠지도록)
         await loadOutbounds();  // 출고 내역도 갱신
+    } catch (e) {
+        console.error(e);
+        setMessage(e.message, true);
+    }
+}
+
+
+// ===== 비활성 상품 관련 =====
+async function loadInactiveProducts() {
+    setMessage('');
+    try {
+        const res = await fetch(API_BASE + '/api/products/inactive');
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error('비활성 상품 조회 실패: ' + text);
+        }
+
+        const products = await res.json();
+        cachedInactiveProducts = products;
+        renderInactiveProductTable(products);
+    } catch (e) {
+        console.error(e);
+        setMessage(e.message, true);
+    }
+}
+
+function renderInactiveProductTable(products) {
+    const tbody = document.querySelector('#inactiveProductTable tbody');
+    if (!tbody) return; // 아직 섹션이 없으면 그냥 무시
+    tbody.innerHTML = '';
+
+    products.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${p.id}</td>
+            <td>${p.code}</td>
+            <td>${p.name}</td>
+            <td>${p.unit}</td>
+            <td>${p.status}</td>
+            <td>${p.createdAt ?? ''}</td>
+            <td>
+                <button onclick="activateProduct(${p.id})">복구</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function activateProduct(id) {
+    if (!confirm('이 상품을 다시 활성화하시겠습니까?')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(API_BASE + '/api/products/' + id + '/activate', {
+            method: 'PATCH'
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error('상품 복구 실패: ' + text);
+        }
+
+        setMessage('상품이 다시 활성화되었습니다.');
+        await loadProducts();          // ACTIVE 목록 갱신
+        await loadInactiveProducts();  // 비활성 목록 갱신
+        await loadStocks();            // 재고도 갱신
+    } catch (e) {
+        console.error(e);
+        setMessage(e.message, true);
+    }
+}
+
+
+// ===== 비활성 창고 관련 =====
+async function loadInactiveWarehouses() {
+    setMessage('');
+    try {
+        const res = await fetch(API_BASE + '/api/warehouses/inactive');
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error('비활성 창고 조회 실패: ' + text);
+        }
+
+        const warehouses = await res.json();
+        cachedInactiveWarehouses = warehouses;
+        renderInactiveWarehouseTable(warehouses);
+    } catch (e) {
+        console.error(e);
+        setMessage(e.message, true);
+    }
+}
+
+function renderInactiveWarehouseTable(warehouses) {
+    const tbody = document.querySelector('#inactiveWarehouseTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    warehouses.forEach(w => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${w.id}</td>
+            <td>${w.code}</td>
+            <td>${w.name}</td>
+            <td>${w.location ?? ''}</td>
+            <td>${w.description ?? ''}</td>
+            <td>${w.status ?? ''}</td>
+            <td>${w.createdAt ?? ''}</td>
+            <td>
+                <button onclick="activateWarehouse(${w.id})">복구</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function activateWarehouse(id) {
+    if (!confirm('이 창고를 다시 활성화하시겠습니까?')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(API_BASE + '/api/warehouses/' + id + '/activate', {
+            method: 'PATCH'
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error('창고 복구 실패: ' + text);
+        }
+
+        setMessage('창고가 다시 활성화되었습니다.');
+        await loadWarehouses();           // ACTIVE 목록 갱신
+        await loadInactiveWarehouses();   // 비활성 목록 갱신
+        await loadStocks();               // 재고, 입출고 선택지 등 갱신
+        await loadInbounds();
+        await loadOutbounds();
     } catch (e) {
         console.error(e);
         setMessage(e.message, true);

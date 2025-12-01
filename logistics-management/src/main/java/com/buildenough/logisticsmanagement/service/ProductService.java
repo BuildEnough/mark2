@@ -54,4 +54,20 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다. id=" + productId));
         product.deactivate();
     }
+
+    @Transactional
+    public void activateProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다. id=" + productId));
+
+        product.activate();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getInactiveProducts() {
+        return productRepository.findByStatus(ProductStatus.INACTIVE)
+                .stream()
+                .map(ProductResponse::new)
+                .toList();
+    }
 }

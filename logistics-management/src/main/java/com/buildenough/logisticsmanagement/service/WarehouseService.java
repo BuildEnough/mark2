@@ -54,4 +54,19 @@ public class WarehouseService {
         warehouse.deactivate();
     }
 
+    @Transactional
+    public void activateWarehouse(Long warehouseId) {
+        Warehouse warehouse = warehouseRepository.findById(warehouseId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다. id=" + warehouseId));
+
+        warehouse.activate();
+    }
+
+    @Transactional(readOnly = true)
+    public List<WarehouseResponse> getInactiveWarehouses() {
+        return warehouseRepository.findByStatus(WarehouseStatus.INACTIVE)
+                .stream()
+                .map(WarehouseResponse::new)
+                .toList();
+    }
 }

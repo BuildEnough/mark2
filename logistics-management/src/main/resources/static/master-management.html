@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마스터 데이터 관리 (상품/창고 활성·비활성)</title>
+    <!-- 기존 CSS 재사용 -->
+    <link rel="stylesheet" href="/css/logistics.css">
+</head>
+<body>
+<div class="header">
+    <h1>마스터 데이터 관리</h1>
+    <div class="nav">
+        <!-- 운영 화면으로 이동 링크 -->
+        <a href="/logistics.html">← 물류 운영 화면으로 이동</a>
+    </div>
+</div>
+
+<div class="container">
+    <div id="message"></div>
+
+    <!-- 상품 관리 -->
+    <div class="section" id="masterProductSection">
+        <h2>상품 활성/비활성 관리</h2>
+
+        <div class="search-row">
+            <strong>활성 상품</strong>
+            <button onclick="loadActiveProducts()">새로고침</button>
+        </div>
+        <table id="activeProductTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>단위</th>
+                <th>상태</th>
+                <th>생성일</th>
+                <th>작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 활성 상품 -->
+            </tbody>
+        </table>
+
+        <div class="search-row" style="margin-top: 16px;">
+            <strong>비활성 상품</strong>
+            <button onclick="loadInactiveProducts()">새로고침</button>
+        </div>
+        <table id="inactiveProductTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>단위</th>
+                <th>상태</th>
+                <th>생성일</th>
+                <th>작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 비활성 상품 -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 창고 관리 -->
+    <div class="section" id="masterWarehouseSection">
+        <h2>창고 활성/비활성 관리</h2>
+
+        <div class="search-row">
+            <strong>활성 창고</strong>
+            <button onclick="loadActiveWarehouses()">새로고침</button>
+        </div>
+        <table id="activeWarehouseTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>위치</th>
+                <th>비고</th>
+                <th>상태</th>
+                <th>생성일</th>
+                <th>작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 활성 창고 -->
+            </tbody>
+        </table>
+
+        <div class="search-row" style="margin-top: 16px;">
+            <strong>비활성 창고</strong>
+            <button onclick="loadInactiveWarehouses()">새로고침</button>
+        </div>
+        <table id="inactiveWarehouseTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>위치</th>
+                <th>비고</th>
+                <th>상태</th>
+                <th>생성일</th>
+                <th>작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 비활성 창고 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/js/master-management.js"></script>
+</body>
+</html>

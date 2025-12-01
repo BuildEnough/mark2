@@ -41,4 +41,16 @@ public class WarehouseController {
         warehouseService.deleteWarehouse(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<Void> activateWarehouse(@PathVariable Long id) {
+        warehouseService.activateWarehouse(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/inactive")
+    public ResponseEntity<List<WarehouseResponse>> getInactiveWarehouses() {
+        List<WarehouseResponse> warehouses = warehouseService.getInactiveWarehouses();
+        return ResponseEntity.ok(warehouses);
+    }
 }

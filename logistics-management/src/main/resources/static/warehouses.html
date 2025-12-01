@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>창고 관리</title>
+    <link rel="stylesheet" href="/css/logistics.css">
+</head>
+<body>
+<div class="header">
+    <h1>창고 관리</h1>
+    <div class="nav">
+        <a href="/logistics.html">입·출고</a>
+        <a href="/stocks.html">재고 조회</a>
+        <a href="/products.html">상품 등록</a>
+        <a href="/warehouses.html">창고 등록</a>
+        <a href="/master-management.html">마스터 관리</a>
+    </div>
+</div>
+
+<div class="container">
+    <div id="message"></div>
+
+    <!-- 창고 섹션 -->
+    <div class="section" id="warehouseSection">
+        <h2>창고 관리</h2>
+
+        <h3>창고 등록</h3>
+        <div>
+            <div>
+                <label for="warehouseCode">코드</label>
+                <input type="text" id="warehouseCode" placeholder="예: WH-001">
+            </div>
+            <div>
+                <label for="warehouseName">이름</label>
+                <input type="text" id="warehouseName" placeholder="예: 서울 1창고">
+            </div>
+            <div>
+                <label for="warehouseLocation">위치</label>
+                <input type="text" id="warehouseLocation" placeholder="예: 서울시 강남구">
+            </div>
+            <div>
+                <label for="warehouseDesc">비고</label>
+                <input type="text" id="warehouseDesc" placeholder="설명">
+            </div>
+            <button onclick="createWarehouse()">창고 등록</button>
+            <button onclick="loadWarehouses()">창고 새로고침</button>
+        </div>
+
+        <div class="search-row">
+            <label for="warehouseSearch">검색(코드/이름)</label>
+            <input type="text" id="warehouseSearch" oninput="filterWarehouses()" placeholder="검색어 입력">
+        </div>
+
+        <h3>창고 목록</h3>
+        <table id="warehouseTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>코드</th>
+                <th>이름</th>
+                <th>위치</th>
+                <th>비고</th>
+                <th>생성일</th>
+                <th>작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 창고 데이터 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/js/logistics.js"></script>
+</body>
+</html>

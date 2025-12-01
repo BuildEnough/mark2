@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 조회</title>
+    <link rel="stylesheet" href="/css/logistics.css">
+</head>
+<body>
+<div class="header">
+    <h1>재고 조회</h1>
+    <div class="nav">
+        <a href="/logistics.html">입·출고</a>
+        <a href="/stocks.html">재고 조회</a>
+        <a href="/products.html">상품 등록</a>
+        <a href="/warehouses.html">창고 등록</a>
+        <a href="/master-management.html">마스터 관리</a>
+    </div>
+</div>
+
+<div class="container">
+    <div id="message"></div>
+
+    <!-- 재고 섹션 -->
+    <div class="section" id="stockSection">
+        <h2>재고 조회</h2>
+
+        <div class="search-row">
+            <label for="stockWarehouseFilter">창고 필터</label>
+            <select id="stockWarehouseFilter" onchange="filterStocks()">
+                <option value="">전체</option>
+            </select>
+
+            <label for="stockProductFilter">상품 필터</label>
+            <select id="stockProductFilter" onchange="filterStocks()">
+                <option value="">전체</option>
+            </select>
+
+            <button onclick="loadStocks()">재고 새로고침</button>
+        </div>
+
+        <table id="stockTable">
+            <thead>
+            <tr>
+                <th>재고ID</th>
+                <th>창고코드</th>
+                <th>창고명</th>
+                <th>상품코드</th>
+                <th>상품명</th>
+                <th>수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 재고 데이터 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/js/logistics.js"></script>
+</body>
+</html>

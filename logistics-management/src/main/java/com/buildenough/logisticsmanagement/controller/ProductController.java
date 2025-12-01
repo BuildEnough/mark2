@@ -35,11 +35,23 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-
     // 상품 삭제(비활성화)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<Void> activateProduct(@PathVariable Long id) {
+        productService.activateProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 비활성 상품 목록
+    @GetMapping("/inactive")
+    public ResponseEntity<List<ProductResponse>> getInactiveProducts() {
+        List<ProductResponse> products = productService.getInactiveProducts();
+        return ResponseEntity.ok(products);
     }
 }

@@ -67,4 +67,7 @@ public class Warehouse {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void activate() {
+        this.status = WarehouseStatus.ACTIVE;
+    }
 }
