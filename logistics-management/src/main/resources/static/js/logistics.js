@@ -7,6 +7,32 @@ let cachedStocks = [];
 let cachedInactiveProducts = [];
 let cachedInactiveWarehouses = [];
 
+
+// 날짜/시간 포맷 함수
+function formatDateTime(value) {
+    if (!value) return '';
+
+    try {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            // 파싱이 안 되면 원래 문자열 그대로
+            return value;
+        }
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        const minute = String(date.getMinutes()).padStart(2, '0');
+        const second = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분 ${second}초`;
+    } catch (e) {
+        console.error('날짜 포맷 오류:', e);
+        return value;
+    }
+}
+
 function setMessage(text, isError = false) {
     const msg = document.getElementById('message');
     msg.textContent = text;
@@ -89,7 +115,7 @@ function renderProductTable(products) {
             <td>${p.name}</td>
             <td>${p.unit}</td>
             <td>${p.status}</td>
-            <td>${p.createdAt ?? ''}</td>
+            <td>${formatDateTime(p.createdAt)}</td>
             <td>
                 <button onclick="deleteProduct(${p.id})">삭제</button>
             </td>
@@ -181,7 +207,7 @@ function renderWarehouseTable(warehouses) {
             <td>${w.name}</td>
             <td>${w.location ?? ''}</td>
             <td>${w.description ?? ''}</td>
-            <td>${w.createdAt ?? ''}</td>
+            <td>${formatDateTime(w.createdAt)}</td>
             <td>
                 <button onclick="deleteWarehouse(${w.id})">삭제</button>
             </td>
@@ -389,7 +415,7 @@ async function loadInbounds() {
                 <td>${i.id}</td>
                 <td>${i.warehouseCode}</td>
                 <td>${i.warehouseName}</td>
-                <td>${i.inboundDate ?? ''}</td>
+                <td>${formatDateTime(i.inboundDate)}</td>
                 <td>${i.remark ?? ''}</td>
                 <td>${i.itemCount}</td>
                 <td>${i.totalQuantity}</td>
@@ -432,7 +458,7 @@ async function loadOutbounds() {
                 <td>${o.id}</td>
                 <td>${o.warehouseCode}</td>
                 <td>${o.warehouseName}</td>
-                <td>${o.outboundDate ?? ''}</td>
+                <td>${formatDateTime(o.outboundDate)}</td>
                 <td>${o.customerName ?? ''}</td>
                 <td>${o.remark ?? ''}</td>
                 <td>${o.itemCount}</td>
