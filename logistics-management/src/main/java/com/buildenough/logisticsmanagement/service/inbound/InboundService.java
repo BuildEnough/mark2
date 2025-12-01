@@ -19,11 +19,10 @@ import java.time.LocalDateTime;
 
 @Service
 public class InboundService {
+    private final InboundRepository inboundRepository;
+    private final WarehouseRepository warehouseRepository;
     private final StockService stockService;
-    private InboundRepository inboundRepository;
-    private WarehouseRepository warehouseRepository;
-    private ProductRepository productRepository;
-    private StockRepository stockRepository;
+    private final ProductRepository productRepository;
 
     public InboundService(InboundRepository inboundRepository,
                           WarehouseRepository warehouseRepository,
@@ -32,7 +31,6 @@ public class InboundService {
         this.inboundRepository = inboundRepository;
         this.warehouseRepository = warehouseRepository;
         this.productRepository = productRepository;
-        this.stockRepository = stockRepository;
         this.stockService = stockService;
     }
 
