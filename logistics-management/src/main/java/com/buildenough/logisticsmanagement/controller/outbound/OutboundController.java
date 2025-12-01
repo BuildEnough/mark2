@@ -1,4 +1,4 @@
-package com.buildenough.logisticsmanagement.controller.controller;
+package com.buildenough.logisticsmanagement.controller.outbound;
 
 import com.buildenough.logisticsmanagement.dto.outbound.OutboundCreateRequest;
 import com.buildenough.logisticsmanagement.dto.outbound.OutboundListItemResponse;
